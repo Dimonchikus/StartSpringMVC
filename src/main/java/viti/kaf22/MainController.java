@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,19 +16,23 @@ import java.util.List;
  */
 @Controller
 public class MainController {
-    PersonContainer container = new PersonContainer();
+    private List<Person> personList = new ArrayList<Person>();
+
+    public List<Person> getPersonList() {
+        return personList;
+    }
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView hello(ModelAndView modelAndView){
-        modelAndView =  new ModelAndView("index");
+        modelAndView.setViewName("index");
         modelAndView.addObject(createPerson());
         return modelAndView;
     }
 
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView add(ModelAndView modelAndView, @ModelAttribute("person") Person person){
-        container.getPersonList().add(person);
+        personList.add(person);
         modelAndView.setViewName("index");
         modelAndView.addObject("message", "SUCCESS");
         return modelAndView;
@@ -36,15 +42,15 @@ public class MainController {
     public ModelAndView showTable(ModelAndView modelAndView, @ModelAttribute("person") Person person){
 
         modelAndView.setViewName("index");
-        modelAndView.addObject( "tableView",container.getPersonList());
+        modelAndView.addObject( "tableView", personList);
         return modelAndView;
     }
 
     @RequestMapping(value = "/clear", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView clear(ModelAndView modelAndView, @ModelAttribute("person") Person person){
-        container.getPersonList().clear();
+        personList.clear();
         modelAndView.setViewName("index");
-        modelAndView.addObject( "tableView",container.getPersonList());
+        modelAndView.addObject( "tableView", personList);
         return modelAndView;
     }
 
